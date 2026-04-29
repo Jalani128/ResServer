@@ -14,7 +14,11 @@ dotenv.config({ path: ".env.local" });
 
 const app = express();
 
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: false,
+}));
 app.use(compression());
 app.use(express.json({ limit: '500kb' }));
 app.use(express.urlencoded({ extended: true, limit: '500kb' }));
@@ -25,10 +29,15 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:5174',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
     'http://localhost:4000',
+    'http://127.0.0.1:4000',
     process.env.FRONTEND_URL,
+    process.env.ADMIN_URL,
   ].filter(Boolean),
   credentials: true,
+  optionsSuccessStatus: 200,
 }));
 
 // Database
