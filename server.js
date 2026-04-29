@@ -33,6 +33,8 @@ app.use(cors({
     'http://127.0.0.1:5174',
     'http://localhost:4000',
     'http://127.0.0.1:4000',
+    'https://admin-rse.vercel.app',
+    'https://real-estate-frontend-eta.vercel.app',
     process.env.FRONTEND_URL,
     process.env.ADMIN_URL,
   ].filter(Boolean),
