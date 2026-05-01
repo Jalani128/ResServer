@@ -2,7 +2,7 @@ import TeamMember from '../models/teamModel.js';
 
 export const getAllTeamMembers = async (req, res) => {
   try {
-    const teamMembers = await TeamMember.find({ isActive: true }).sort({ createdAt: -1 });
+    const teamMembers = await TeamMember.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
     res.status(200).json({
       success: true,
       data: teamMembers,
@@ -18,16 +18,17 @@ export const getAllTeamMembers = async (req, res) => {
 
 export const createTeamMember = async (req, res) => {
   try {
-    const { name, role, email, phone, image, bio, socialLinks } = req.body;
+    const { name, designation, email, phone, profileImage, bio, socialLinks, sortOrder } = req.body;
 
     const teamMember = new TeamMember({
       name,
-      role,
+      designation,
       email,
       phone,
-      image,
+      profileImage,
       bio,
       socialLinks,
+      sortOrder: sortOrder || 0,
     });
 
     await teamMember.save();
@@ -48,11 +49,11 @@ export const createTeamMember = async (req, res) => {
 export const updateTeamMember = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, role, email, phone, image, bio, socialLinks } = req.body;
+    const { name, designation, email, phone, profileImage, bio, socialLinks, sortOrder } = req.body;
 
     const teamMember = await TeamMember.findByIdAndUpdate(
       id,
-      { name, role, email, phone, image, bio, socialLinks },
+      { name, designation, email, phone, profileImage, bio, socialLinks, sortOrder },
       { new: true, runValidators: true }
     );
 

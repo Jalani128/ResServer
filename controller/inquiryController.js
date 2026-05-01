@@ -1,59 +1,5 @@
-import jwt from 'jsonwebtoken';
-import Inquiry from '../models/inquiryModel.js';
+import Inquiry from "../models/inquiryModel.js";
 import asyncHandler from "express-async-handler";
-
-/**
- * @desc    Admin login only
- * @route   POST /api/users/admin
- * @access  Public
- */
-export const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password',
-      });
-    }
-
-    // Hardcoded values for testing
-    const adminEmail = 'admin@gmail.com';
-    const adminPassword = 'admin@987';
-
-    if (email !== adminEmail || password !== adminPassword) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid admin credentials',
-      });
-    }
-
-    const token = jwt.sign(
-      { id: 'admin', isAdmin: true },
-      process.env.JWT_SECRET || 'fallback_secret',
-      { expiresIn: '30d' }
-    );
-
-    res.status(200).json({
-      success: true,
-      message: 'Admin login successful',
-      token,
-      admin: {
-        id: 'admin',
-        name: 'Admin',
-        email: adminEmail,
-        isAdmin: true,
-      },
-    });
-  } catch (error) {
-    console.error('Admin login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during admin login',
-    });
-  }
-};
 
 /**
  * @desc    Create a new inquiry
@@ -204,29 +150,6 @@ export const updateInquiryStatus = asyncHandler(async (req, res) => {
  * @access  Private/Admin
  */
 export const deleteInquiry = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  const deletedInquiry = await Inquiry.findByIdAndDelete(id);
-
-  if (!deletedInquiry) {
-    res.status(404);
-    throw new Error("Inquiry not found");
-  }
-
-  res.json({
-    success: true,
-    message: "Inquiry deleted successfully",
-  });
-});
-
-/**
- * @desc    Update inquiry notes (Admin only)
- * @route   PUT /api/admin/inquiries/:id/notes
- * @access  Private/Admin
- */
-export const updateInquiryNotes = asyncHandler(async (req, res) => {
-  const { notes } = req.body;
-
   const inquiry = await Inquiry.findById(req.params.id);
 
   if (!inquiry) {
@@ -234,13 +157,10 @@ export const updateInquiryNotes = asyncHandler(async (req, res) => {
     throw new Error("Inquiry not found");
   }
 
-  // Update notes
-  inquiry.notes = notes;
-  const updatedInquiry = await inquiry.save();
+  await inquiry.remove();
 
   res.json({
     success: true,
-    message: "Inquiry notes updated successfully",
-    inquiry: updatedInquiry,
+    message: "Inquiry deleted successfully",
   });
 });

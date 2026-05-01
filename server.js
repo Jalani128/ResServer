@@ -9,6 +9,7 @@ import connectdb from './config/mongodb.js';
 import userRoutes from './routes/userRoutes.js';
 import teamRouter from './routes/teamRoutes.js';
 import blogRouter from './routes/blogRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
 
 dotenv.config({ path: ".env.local" });
 
@@ -52,6 +53,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/api/team', teamRouter);
 app.use('/api/blogs', blogRouter);
+app.use('/api/admin', adminRouter);
 
 // Health check
 app.get('/', (req, res) => res.json({ success: true, message: 'API is running' }));

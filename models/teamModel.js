@@ -6,7 +6,7 @@ const teamMemberSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  role: {
+  designation: {
     type: String,
     required: true,
     enum: ['Agent', 'Manager', 'Admin', 'Team Lead', 'Support', 'Developer'],
@@ -21,7 +21,7 @@ const teamMemberSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  image: {
+  profileImage: {
     type: String,
     default: '',
   },
@@ -33,8 +33,10 @@ const teamMemberSchema = new mongoose.Schema({
     linkedin: { type: String, default: '' },
     twitter: { type: String, default: '' },
     instagram: { type: String, default: '' },
-    facebook: { type: String, default: '' },
-    website: { type: String, default: '' },
+  },
+  sortOrder: {
+    type: Number,
+    default: 0,
   },
   isActive: {
     type: Boolean,
