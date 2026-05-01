@@ -15,17 +15,7 @@ dotenv.config({ path: ".env.local" });
 
 const app = express();
 
-app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: false,
-}));
-app.use(compression());
-app.use(express.json({ limit: '500kb' }));
-app.use(express.urlencoded({ extended: true, limit: '500kb' }));
-app.use(mongoSanitize());
-
-// CORS
+// CORS - MUST be placed before express.json() and routes
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -39,9 +29,28 @@ app.use(cors({
     process.env.FRONTEND_URL,
     process.env.ADMIN_URL,
   ].filter(Boolean),
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 200,
 }));
+
+// Extra safety fix for OPTIONS requests
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: false,
+}));
+app.use(compression());
+app.use(express.json({ limit: '500kb' }));
+app.use(express.urlencoded({ extended: true, limit: '500kb' }));
+app.use(mongoSanitize());
 
 // Database
 (async () => {
